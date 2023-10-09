@@ -35,7 +35,6 @@ pipeline {
             echo 'deploying on kubernetes cluster'
             script{
                //sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
-               sh 'sudo su -'
                sh 'kubectl version'
             }
          }
