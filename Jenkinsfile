@@ -35,7 +35,7 @@ pipeline {
             echo 'deploying on kubernetes cluster'
             script{
                //sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
-               sh "kubectl set image deployment/deploymentone container-0=srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
+               sh "kubectl --kubeconfig /root/.kube/config set image deployment swe645 swe645-group=docker.io/srinathsilla/student-survey-form:$BUILD_NUMBER"
             }
          }
       }
