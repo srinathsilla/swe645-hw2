@@ -19,24 +19,24 @@ pipeline {
          }
       }
 
-    //   stage('Push Image to Dockerhub') {
-    //      steps {
-    //         echo 'pushing to image to docker hub'
-    //         script{
-    //            docker.withRegistry('',registryCredential){
-    //               sh "docker push srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
-    //            }
-    //         }
-    //      }
-    //   }
+      stage('Push Image to Dockerhub') {
+         steps {
+            echo 'pushing to image to docker hub'
+            script{
+               docker.withRegistry('',registryCredential){
+                  sh "docker push srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
+               }
+            }
+         }
+      }
 
-    //   stage('Deploying to Rancher to single node(deployed in 3 replicas)') {
-    //      steps {
-    //         echo 'deploying on kubernetes cluster'
-    //         script{
-    //            sh "kubectl set image deployment/deploymentone container-0=srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
-    //         }
-    //      }
-    //   }
+      stage('Deploying to Rancher to single node(deployed in 3 replicas)') {
+         steps {
+            echo 'deploying on kubernetes cluster'
+            script{
+               sh "kubectl set image deployment/deploymentone container-0=srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
+            }
+         }
+      }
    }
 }
