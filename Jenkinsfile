@@ -1,6 +1,8 @@
 pipeline {
    environment {
+        registry = "srinathsilla/student-survey-form"
         registryCredential = 'dockerhub'
+        dockerImage = ''
     }
    agent any
 
@@ -11,9 +13,7 @@ pipeline {
             script{
                sh 'rm -rf *.war'
                sh 'jar -cvf student-survey-form.war -C src/main/webapp/ .'
-               docker.withRegistry('',registryCredential){
-                  def customImage = docker.build("srinathsilla/student-survey-form:${env.BUILD_NUMBER}")
-               }
+               dockerImage = docker.build registry + ":$BUILD_NUMBER"
             }
          }
       }
@@ -23,7 +23,8 @@ pipeline {
             echo 'pushing to image to docker hub'
             script{
                docker.withRegistry('',registryCredential){
-                  sh "docker push srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
+                  dockerImage.push()
+                  //sh "docker push srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                }
             }
          }
