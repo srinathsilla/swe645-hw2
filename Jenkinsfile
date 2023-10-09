@@ -1,84 +1,42 @@
 pipeline {
-    environment {
+   environment {
         registry = "srinathsilla/student-survey-form"
         registryCredential = 'dockerhub'
-        dockerImage = ''
     }
-    agent any
-    
-    stage {
-        stage('Cloning Git') {
-            steps{
-                git 'https://github.com/srinathsilla/swe645-hw2.git'
-                withAnt(installation: 'Ant1.10.14') {
-                        sh'''
-                        #!/bin/bash
-                        cd ~/workspace/swe645-hw2
-                        ls
-                        ant war
-                        '''
-                }
+   agent any
+
+   stages {
+      stage('Build') {
+         steps {
+            echo 'Building...'
+            script{
+               sh 'rm -rf *.war'
+               sh 'jar -cvf student-survey-form.war -C src/main/webapp/ .'
+               docker.withRegistry('',registryCredential){
+                  def customImage = docker.build("${registry}:${env.BUILD_NUMBER}")
+               }
             }
-        }
+         }
+      }
 
-        stage('Build') {
-            steps {
-                echo 'Building..'
-                script {
-
-                  dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                }
-
+      stage('Push Image to Dockerhub') {
+         steps {
+            echo 'pushing to image to docker hub'
+            script{
+               docker.withRegistry('',registryCredential){
+                  sh "docker push ${registry}:${env.BUILD_NUMBER}"
+               }
             }
-        }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+         }
+      }
 
-        stage('Deploy Image') {
-            steps{
-                script{
-                    docker.withRegistry('',registryCredential){
-                        dockerImage.push()
-                    }
-                }
+      stage('Deploying to Rancher to single node(deployed in 3 replicas)') {
+         steps {
+            echo 'deploying on kubernetes cluster'
+            script{
+               sh "kubectl set image deployment/deploymentone container-0=${registry}:${env.BUILD_NUMBER}"
             }
-        }
-
-        stage('Remove Unused docker image') {
-          steps{
-            sh "docker rmi $registry:$BUILD_NUMBER"
-          }
-        }
-		
-		stage('redeploy') {
-            steps{
-               
-               sh'''
-               #!/bin/bash
-                docker login
-                docker pull srinathsilla/student-survey-form:$BUILD_NUMBER
-                sudo -s source /etc/environment
-                kubectl --kubeconfig /home/ubuntu/.kube/config set image deployment swe645 swe645-group=docker.io/srinathsilla/student-survey-form:$BUILD_NUMBER
-            '''
-            }
-        }
-
-        stage('Remove Unused docker image') {
-          steps{
-            sh "docker rmi $registryRestful:$BUILD_NUMBER"
-            sh "docker rmi $registryApp:$BUILD_NUMBER"
-          }
-        }
-		
-    }
-
-     
+         }
+      }
+   }
 }
