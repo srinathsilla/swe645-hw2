@@ -24,6 +24,7 @@ pipeline {
             echo 'pushing to image to docker hub'
             script{
                docker.withRegistry('',registryCredential){
+                  sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                   sh "docker push srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                }
             }
