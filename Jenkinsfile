@@ -12,7 +12,7 @@ pipeline {
             script{
                sh 'rm -rf *.war'
                sh 'jar -cvf student-survey-form.war -C src/main/webapp/ .'
-               sh 'sudo usermod -a -G docker jenkins'
+               sh 'sudo usermod -a -G docker $USER'
                docker.withRegistry('',registryCredential){
                   def customImage = docker.build("student-survey-form:${env.BUILD_NUMBER}")
                }
