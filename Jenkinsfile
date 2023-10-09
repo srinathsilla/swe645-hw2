@@ -13,7 +13,7 @@ pipeline {
                sh 'rm -rf *.war'
                sh 'jar -cvf student-survey-form.war -C src/main/webapp/ .'
                docker.withRegistry('',registryCredential){
-                  def customImage = docker.build("student-survey-form:${env.BUILD_NUMBER}")
+                  def customImage = docker.build("srinathsilla/student-survey-form:${env.BUILD_NUMBER}")
                }
             }
          }
@@ -34,7 +34,7 @@ pipeline {
          steps {
             echo 'deploying on kubernetes cluster'
             script{
-               sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
+               //sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                sh "kubectl set image deployment/deploymentone container-0=srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
             }
          }
