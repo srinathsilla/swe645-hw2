@@ -12,9 +12,9 @@ pipeline {
             script{
                sh 'rm -rf *.war'
                sh 'jar -cvf student-survey-form.war -C src/main/webapp/ .'
-            //    docker.withRegistry('',registryCredential){
-            //       def customImage = docker.build("student-survey-form:${env.BUILD_NUMBER}")
-            //    }
+               docker.withRegistry('',registryCredential){
+                  def customImage = docker.build("student-survey-form:${env.BUILD_NUMBER}")
+               }
             }
          }
       }
