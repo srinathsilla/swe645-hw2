@@ -31,52 +31,52 @@ pipeline {
 
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Testing..'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo 'Deploying....'
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         echo 'Testing..'
+        //     }
+        // }
+        // stage('Deploy') {
+        //     steps {
+        //         echo 'Deploying....'
+        //     }
+        // }
 
-        stage('Deploy Image') {
-            steps{
-                script{
-                    docker.withRegistry('',registryCredential){
-                        dockerImage.push()
-                    }
-                }
-            }
-        }
+        // stage('Deploy Image') {
+        //     steps{
+        //         script{
+        //             docker.withRegistry('',registryCredential){
+        //                 dockerImage.push()
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Remove Unused docker image') {
-          steps{
-            sh "docker rmi $registry:$BUILD_NUMBER"
-          }
-        }
+        // stage('Remove Unused docker image') {
+        //   steps{
+        //     sh "docker rmi $registry:$BUILD_NUMBER"
+        //   }
+        // }
 		
-		stage('redeploy') {
-            steps{
+		// stage('redeploy') {
+        //     steps{
                
-               sh'''
-               #!/bin/bash
-                docker login
-                docker pull srinathsilla/student-survey-form:$BUILD_NUMBER
-                sudo -s source /etc/environment
-                kubectl --kubeconfig /home/ubuntu/.kube/config set image deployment swe645 swe645-group=docker.io/srinathsilla/student-survey-form:$BUILD_NUMBER
-            '''
-            }
-        }
+        //        sh'''
+        //        #!/bin/bash
+        //         docker login
+        //         docker pull srinathsilla/student-survey-form:$BUILD_NUMBER
+        //         sudo -s source /etc/environment
+        //         kubectl --kubeconfig /home/ubuntu/.kube/config set image deployment swe645 swe645-group=docker.io/srinathsilla/student-survey-form:$BUILD_NUMBER
+        //     '''
+        //     }
+        // }
 
-        stage('Remove Unused docker image 2') {
-          steps{
-            sh "docker rmi $registryRestful:$BUILD_NUMBER"
-            sh "docker rmi $registryApp:$BUILD_NUMBER"
-          }
-        }
+        // stage('Remove Unused docker image 2') {
+        //   steps{
+        //     sh "docker rmi $registryRestful:$BUILD_NUMBER"
+        //     sh "docker rmi $registryApp:$BUILD_NUMBER"
+        //   }
+        // }
 		
     }
 
