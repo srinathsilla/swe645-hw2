@@ -24,7 +24,6 @@ pipeline {
             echo 'pushing to image to docker hub'
             script{
                docker.withRegistry('',registryCredential){
-                  sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                   sh "docker push srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                }
             }
@@ -35,6 +34,7 @@ pipeline {
          steps {
             echo 'deploying on kubernetes cluster'
             script{
+               sh "docker pull srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
                sh "kubectl set image deployment/deploymentone container-0=srinathsilla/student-survey-form:${env.BUILD_NUMBER}"
             }
          }
