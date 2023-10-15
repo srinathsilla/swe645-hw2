@@ -14,6 +14,10 @@ h2, h3{
   color: #FFCC33;
 }
 
+.loadbalancer{
+  color: #006633;
+}
+
 .content {
   max-width: 1200px;
   margin: auto;

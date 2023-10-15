@@ -40,7 +40,7 @@ pipeline {
       //    }
       // }
 
-      stage('Deploying to Rancher using Load Balancer as a service') {
+      stage('Deploying to Rancher using Load Balancer') {
          steps {
             script{
                sh "kubectl --kubeconfig /home/ubuntu/.kube/config set image deployment/hw2-cluster-lb container-0=srinathsilla/student-survey-form:${BUILD_NUMBER}-loadbalancer"
