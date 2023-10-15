@@ -39,5 +39,13 @@ pipeline {
             }
          }
       }
+
+      stage('Deploying to Rancher using Load Balancer as a service') {
+         steps {
+            script{
+               sh "kubectl set image deployment/hw2-cluster-lb container-0=srinathsilla/student-survey-form:${BUILD_NUMBER}"
+            }
+         }
+      }
    }
 }
