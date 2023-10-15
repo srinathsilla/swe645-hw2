@@ -30,7 +30,7 @@ pipeline {
          }
       }
 
-      stage('Deploying to Rancher to single node(deployed in 3 replicas)') {
+      stage('Deploying to Rancher using nodeport') {
          steps {
             echo 'deploying on kubernetes cluster'
             script{
